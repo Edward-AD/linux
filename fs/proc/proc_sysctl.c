@@ -590,6 +590,7 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
 		if (!copy_from_iter_full(kbuf, count, iter))
 			goto out_free_buf;
 		kbuf[count] = '\0';
+		printk("write buf: %s, count: %lu, tab: %p, %s\n", kbuf, count, table, __func__);
 	}
 
 	error = BPF_CGROUP_RUN_PROG_SYSCTL(head, table, write, &kbuf, &count,
