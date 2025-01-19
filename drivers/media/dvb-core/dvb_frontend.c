@@ -2873,6 +2873,7 @@ static int dvb_frontend_open(struct inode *inode, struct file *file)
 
 	if (adapter->mfe_shared)
 		mutex_unlock(&adapter->mfe_lock);
+	dvb_generic_release(inode, file);
 	return ret;
 
 err3:

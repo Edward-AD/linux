@@ -148,6 +148,7 @@ int dvb_generic_open(struct inode *inode, struct file *file)
 	}
 
 	dvbdev->users--;
+	dvb_device_get(dvbdev);
 	return 0;
 }
 EXPORT_SYMBOL(dvb_generic_open);
