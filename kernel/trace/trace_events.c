@@ -1245,6 +1245,7 @@ static void *t_start(struct seq_file *m, loff_t *pos)
 	struct trace_array *tr = m->private;
 	loff_t l;
 
+	printk("m: %p, %s\n", m, __func__);
 	mutex_lock(&event_mutex);
 
 	file = list_entry(&tr->events, struct trace_event_file, list);
@@ -1278,6 +1279,7 @@ static void *s_start(struct seq_file *m, loff_t *pos)
 	struct trace_array *tr = m->private;
 	loff_t l;
 
+	printk("m: %p, %s\n", m, __func__);
 	mutex_lock(&event_mutex);
 
 	file = list_entry(&tr->events, struct trace_event_file, list);
@@ -1303,6 +1305,8 @@ static int t_show(struct seq_file *m, void *v)
 
 static void t_stop(struct seq_file *m, void *p)
 {
+	if (!mutex_is_locked(&event_mutex))
+		return;
 	mutex_unlock(&event_mutex);
 }
 
@@ -1344,6 +1348,7 @@ static void *__start(struct seq_file *m, loff_t *pos, int type)
 	 * If we just passed the tr->filtered_pids around, then RCU would
 	 * have been enough, but doing that makes things more complex.
 	 */
+	printk("m: %p, %s\n", m, __func__);
 	mutex_lock(&event_mutex);
 	rcu_read_lock_sched();
 
@@ -1634,6 +1639,7 @@ static void *f_start(struct seq_file *m, loff_t *pos)
 	loff_t l = 0;
 
 	/* ->stop() is called even if ->start() fails */
+	printk("m: %p, %s\n", m, __func__);
 	mutex_lock(&event_mutex);
 	file = event_file_file(m->private);
 	if (!file)
@@ -2490,6 +2496,7 @@ static int event_callback(const char *name, umode_t *mode, void **data,
 	struct trace_event_file *file = *data;
 	struct trace_event_call *call = file->event_call;
 
+	printk("event cb, name: %s, %s\n", name, __func__);
 	if (strcmp(name, "format") == 0) {
 		*mode = TRACE_MODE_READ;
 		*fops = &ftrace_event_format_fops;
